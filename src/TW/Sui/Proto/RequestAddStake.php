@@ -36,10 +36,18 @@ class RequestAddStake extends \Google\Protobuf\Internal\Message
     protected $validator = '';
     /**
      * Gas object to be used in this transaction.
+     * Must be unset when `SigningInput.valid_during` is set (gas is paid from the address balance).
      *
      * Generated from protobuf field <code>.TW.Sui.Proto.ObjectRef gas = 4;</code>
      */
     protected $gas = null;
+    /**
+     * SIP-58: amount (MIST) withdrawn from the sender's SUI address balance and staked together
+     * with `coins`. 0 means none.
+     *
+     * Generated from protobuf field <code>uint64 address_balance_amount = 5;</code>
+     */
+    protected $address_balance_amount = 0;
 
     /**
      * Constructor.
@@ -55,6 +63,10 @@ class RequestAddStake extends \Google\Protobuf\Internal\Message
      *           The validator's Sui address.
      *     @type \TW\Sui\Proto\ObjectRef $gas
      *           Gas object to be used in this transaction.
+     *           Must be unset when `SigningInput.valid_during` is set (gas is paid from the address balance).
+     *     @type int|string $address_balance_amount
+     *           SIP-58: amount (MIST) withdrawn from the sender's SUI address balance and staked together
+     *           with `coins`. 0 means none.
      * }
      */
     public function __construct($data = NULL) {
@@ -152,6 +164,7 @@ class RequestAddStake extends \Google\Protobuf\Internal\Message
 
     /**
      * Gas object to be used in this transaction.
+     * Must be unset when `SigningInput.valid_during` is set (gas is paid from the address balance).
      *
      * Generated from protobuf field <code>.TW.Sui.Proto.ObjectRef gas = 4;</code>
      * @return \TW\Sui\Proto\ObjectRef|null
@@ -173,6 +186,7 @@ class RequestAddStake extends \Google\Protobuf\Internal\Message
 
     /**
      * Gas object to be used in this transaction.
+     * Must be unset when `SigningInput.valid_during` is set (gas is paid from the address balance).
      *
      * Generated from protobuf field <code>.TW.Sui.Proto.ObjectRef gas = 4;</code>
      * @param \TW\Sui\Proto\ObjectRef $var
@@ -182,6 +196,34 @@ class RequestAddStake extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkMessage($var, \TW\Sui\Proto\ObjectRef::class);
         $this->gas = $var;
+
+        return $this;
+    }
+
+    /**
+     * SIP-58: amount (MIST) withdrawn from the sender's SUI address balance and staked together
+     * with `coins`. 0 means none.
+     *
+     * Generated from protobuf field <code>uint64 address_balance_amount = 5;</code>
+     * @return int|string
+     */
+    public function getAddressBalanceAmount()
+    {
+        return $this->address_balance_amount;
+    }
+
+    /**
+     * SIP-58: amount (MIST) withdrawn from the sender's SUI address balance and staked together
+     * with `coins`. 0 means none.
+     *
+     * Generated from protobuf field <code>uint64 address_balance_amount = 5;</code>
+     * @param int|string $var
+     * @return $this
+     */
+    public function setAddressBalanceAmount($var)
+    {
+        GPBUtil::checkUint64($var);
+        $this->address_balance_amount = $var;
 
         return $this;
     }

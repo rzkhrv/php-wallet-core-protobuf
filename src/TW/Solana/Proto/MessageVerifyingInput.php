@@ -14,12 +14,6 @@ use Google\Protobuf\Internal\GPBUtil;
 class MessageVerifyingInput extends \Google\Protobuf\Internal\Message
 {
     /**
-     * The message signed.
-     *
-     * Generated from protobuf field <code>string message = 1;</code>
-     */
-    protected $message = '';
-    /**
      * Public key that will verify and recover the message from the signature.
      *
      * Generated from protobuf field <code>bytes public_key = 2;</code>
@@ -31,6 +25,28 @@ class MessageVerifyingInput extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string signature = 3;</code>
      */
     protected $signature = '';
+    /**
+     * How the signed bytes were produced. Must match what the signer used, since it decides
+     * which bytes the signature is checked against.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.MessageType message_type = 4;</code>
+     */
+    protected $message_type = 0;
+    /**
+     * The 32-byte application domain of the off-chain message header. Required for
+     * `MessageType_offchain_v0`, and refused for `MessageType_raw`.
+     *
+     * Generated from protobuf field <code>bytes application_domain = 5;</code>
+     */
+    protected $application_domain = '';
+    /**
+     * The format byte the signer stated. Like `message_type`, it must match what was signed,
+     * since the byte is inside the signed bytes.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.MessageFormat message_format = 8;</code>
+     */
+    protected $message_format = 0;
+    protected $message_payload;
 
     /**
      * Constructor.
@@ -38,43 +54,28 @@ class MessageVerifyingInput extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type string $message
-     *           The message signed.
      *     @type string $public_key
      *           Public key that will verify and recover the message from the signature.
      *     @type string $signature
      *           The signature, Base58-encoded.
+     *     @type int $message_type
+     *           How the signed bytes were produced. Must match what the signer used, since it decides
+     *           which bytes the signature is checked against.
+     *     @type string $application_domain
+     *           The 32-byte application domain of the off-chain message header. Required for
+     *           `MessageType_offchain_v0`, and refused for `MessageType_raw`.
+     *     @type int $message_format
+     *           The format byte the signer stated. Like `message_type`, it must match what was signed,
+     *           since the byte is inside the signed bytes.
+     *     @type string $message
+     *           The message signed.
+     *     @type \TW\Solana\Proto\StructuredMessage $structured_message
+     *           Labeled lines that this library renders into the message body.
      * }
      */
     public function __construct($data = NULL) {
         \GPBMetadata\Solana::initOnce();
         parent::__construct($data);
-    }
-
-    /**
-     * The message signed.
-     *
-     * Generated from protobuf field <code>string message = 1;</code>
-     * @return string
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    /**
-     * The message signed.
-     *
-     * Generated from protobuf field <code>string message = 1;</code>
-     * @param string $var
-     * @return $this
-     */
-    public function setMessage($var)
-    {
-        GPBUtil::checkString($var, True);
-        $this->message = $var;
-
-        return $this;
     }
 
     /**
@@ -127,6 +128,160 @@ class MessageVerifyingInput extends \Google\Protobuf\Internal\Message
         $this->signature = $var;
 
         return $this;
+    }
+
+    /**
+     * How the signed bytes were produced. Must match what the signer used, since it decides
+     * which bytes the signature is checked against.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.MessageType message_type = 4;</code>
+     * @return int
+     */
+    public function getMessageType()
+    {
+        return $this->message_type;
+    }
+
+    /**
+     * How the signed bytes were produced. Must match what the signer used, since it decides
+     * which bytes the signature is checked against.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.MessageType message_type = 4;</code>
+     * @param int $var
+     * @return $this
+     */
+    public function setMessageType($var)
+    {
+        GPBUtil::checkEnum($var, \TW\Solana\Proto\MessageType::class);
+        $this->message_type = $var;
+
+        return $this;
+    }
+
+    /**
+     * The 32-byte application domain of the off-chain message header. Required for
+     * `MessageType_offchain_v0`, and refused for `MessageType_raw`.
+     *
+     * Generated from protobuf field <code>bytes application_domain = 5;</code>
+     * @return string
+     */
+    public function getApplicationDomain()
+    {
+        return $this->application_domain;
+    }
+
+    /**
+     * The 32-byte application domain of the off-chain message header. Required for
+     * `MessageType_offchain_v0`, and refused for `MessageType_raw`.
+     *
+     * Generated from protobuf field <code>bytes application_domain = 5;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setApplicationDomain($var)
+    {
+        GPBUtil::checkString($var, False);
+        $this->application_domain = $var;
+
+        return $this;
+    }
+
+    /**
+     * The format byte the signer stated. Like `message_type`, it must match what was signed,
+     * since the byte is inside the signed bytes.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.MessageFormat message_format = 8;</code>
+     * @return int
+     */
+    public function getMessageFormat()
+    {
+        return $this->message_format;
+    }
+
+    /**
+     * The format byte the signer stated. Like `message_type`, it must match what was signed,
+     * since the byte is inside the signed bytes.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.MessageFormat message_format = 8;</code>
+     * @param int $var
+     * @return $this
+     */
+    public function setMessageFormat($var)
+    {
+        GPBUtil::checkEnum($var, \TW\Solana\Proto\MessageFormat::class);
+        $this->message_format = $var;
+
+        return $this;
+    }
+
+    /**
+     * The message signed.
+     *
+     * Generated from protobuf field <code>string message = 1;</code>
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->readOneof(1);
+    }
+
+    public function hasMessage()
+    {
+        return $this->hasOneof(1);
+    }
+
+    /**
+     * The message signed.
+     *
+     * Generated from protobuf field <code>string message = 1;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setMessage($var)
+    {
+        GPBUtil::checkString($var, True);
+        $this->writeOneof(1, $var);
+
+        return $this;
+    }
+
+    /**
+     * Labeled lines that this library renders into the message body.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.StructuredMessage structured_message = 7;</code>
+     * @return \TW\Solana\Proto\StructuredMessage|null
+     */
+    public function getStructuredMessage()
+    {
+        return $this->readOneof(7);
+    }
+
+    public function hasStructuredMessage()
+    {
+        return $this->hasOneof(7);
+    }
+
+    /**
+     * Labeled lines that this library renders into the message body.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.StructuredMessage structured_message = 7;</code>
+     * @param \TW\Solana\Proto\StructuredMessage $var
+     * @return $this
+     */
+    public function setStructuredMessage($var)
+    {
+        GPBUtil::checkMessage($var, \TW\Solana\Proto\StructuredMessage::class);
+        $this->writeOneof(7, $var);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessagePayload()
+    {
+        return $this->whichOneof("message_payload");
     }
 
 }

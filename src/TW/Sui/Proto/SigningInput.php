@@ -40,6 +40,17 @@ class SigningInput extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>uint64 reference_gas_price = 13;</code>
      */
     protected $reference_gas_price = 0;
+    /**
+     * SIP-58: when set, gas is paid from the sender's SUI address balance instead of a gas coin.
+     * Supported by `PaySui`, `PayAllSui`, `Pay`, `RequestAddStake`, `RequestWithdrawStake` and
+     * `TransferObject`; the `gas` object of the latter four must then be unset. It is an error with
+     * `SignDirect` and `RawJson` (their transaction is prebuilt) and when `gas_budget` is 0.
+     * `gas_budget` is reserved from the address balance and the unused part is refunded to it.
+     * The window must be the current epoch or the current and the next one.
+     *
+     * Generated from protobuf field <code>.TW.Sui.Proto.ValidDuring valid_during = 14;</code>
+     */
+    protected $valid_during = null;
     protected $transaction_payload;
 
     /**
@@ -65,6 +76,13 @@ class SigningInput extends \Google\Protobuf\Internal\Message
      *           The gas budget, the transaction will fail if the gas cost exceed the budget.
      *     @type int|string $reference_gas_price
      *           Reference gas price.
+     *     @type \TW\Sui\Proto\ValidDuring $valid_during
+     *           SIP-58: when set, gas is paid from the sender's SUI address balance instead of a gas coin.
+     *           Supported by `PaySui`, `PayAllSui`, `Pay`, `RequestAddStake`, `RequestWithdrawStake` and
+     *           `TransferObject`; the `gas` object of the latter four must then be unset. It is an error with
+     *           `SignDirect` and `RawJson` (their transaction is prebuilt) and when `gas_budget` is 0.
+     *           `gas_budget` is reserved from the address balance and the unused part is refunded to it.
+     *           The window must be the current epoch or the current and the next one.
      * }
      */
     public function __construct($data = NULL) {
@@ -390,6 +408,52 @@ class SigningInput extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkUint64($var);
         $this->reference_gas_price = $var;
+
+        return $this;
+    }
+
+    /**
+     * SIP-58: when set, gas is paid from the sender's SUI address balance instead of a gas coin.
+     * Supported by `PaySui`, `PayAllSui`, `Pay`, `RequestAddStake`, `RequestWithdrawStake` and
+     * `TransferObject`; the `gas` object of the latter four must then be unset. It is an error with
+     * `SignDirect` and `RawJson` (their transaction is prebuilt) and when `gas_budget` is 0.
+     * `gas_budget` is reserved from the address balance and the unused part is refunded to it.
+     * The window must be the current epoch or the current and the next one.
+     *
+     * Generated from protobuf field <code>.TW.Sui.Proto.ValidDuring valid_during = 14;</code>
+     * @return \TW\Sui\Proto\ValidDuring|null
+     */
+    public function getValidDuring()
+    {
+        return $this->valid_during;
+    }
+
+    public function hasValidDuring()
+    {
+        return isset($this->valid_during);
+    }
+
+    public function clearValidDuring()
+    {
+        unset($this->valid_during);
+    }
+
+    /**
+     * SIP-58: when set, gas is paid from the sender's SUI address balance instead of a gas coin.
+     * Supported by `PaySui`, `PayAllSui`, `Pay`, `RequestAddStake`, `RequestWithdrawStake` and
+     * `TransferObject`; the `gas` object of the latter four must then be unset. It is an error with
+     * `SignDirect` and `RawJson` (their transaction is prebuilt) and when `gas_budget` is 0.
+     * `gas_budget` is reserved from the address balance and the unused part is refunded to it.
+     * The window must be the current epoch or the current and the next one.
+     *
+     * Generated from protobuf field <code>.TW.Sui.Proto.ValidDuring valid_during = 14;</code>
+     * @param \TW\Sui\Proto\ValidDuring $var
+     * @return $this
+     */
+    public function setValidDuring($var)
+    {
+        GPBUtil::checkMessage($var, \TW\Sui\Proto\ValidDuring::class);
+        $this->valid_during = $var;
 
         return $this;
     }

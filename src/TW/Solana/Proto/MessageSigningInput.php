@@ -14,17 +14,47 @@ use Google\Protobuf\Internal\GPBUtil;
 class MessageSigningInput extends \Google\Protobuf\Internal\Message
 {
     /**
-     * The secret private key used for signing (32 bytes).
+     * The secret private key used for signing (32 bytes). Required to sign; required for a
+     * pre-image only when `public_key` is not given.
      *
      * Generated from protobuf field <code>bytes private_key = 1;</code>
      */
     protected $private_key = '';
     /**
-     * A UTF-8 regular message to sign.
+     * The public key of the signer (32 bytes), for asking `TWMessageSignerPreImageHashes` for
+     * the bytes to sign without holding the secret — the external-signing flow, where the key
+     * lives in a hardware wallet. `MessageType_offchain_v0` states the signer inside the signed
+     * bytes, so its pre-image cannot be built without one of the two keys; `MessageType_raw`
+     * needs neither. Ignored when signing, which takes the signer from `private_key`.
      *
-     * Generated from protobuf field <code>string message = 2;</code>
+     * Generated from protobuf field <code>bytes public_key = 6;</code>
      */
-    protected $message = '';
+    protected $public_key = '';
+    /**
+     * How the signed bytes are produced. Defaults to `MessageType_raw`, which is what this coin
+     * did before the other types existed.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.MessageType message_type = 3;</code>
+     */
+    protected $message_type = 0;
+    /**
+     * The 32-byte application domain of the off-chain message header: the caller's own domain
+     * separator, which is what stops a signature over its messages from verifying against
+     * another application's. Required for `MessageType_offchain_v0`, and refused for
+     * `MessageType_raw`, which signs the body bare and has no header to state one in.
+     *
+     * Generated from protobuf field <code>bytes application_domain = 4;</code>
+     */
+    protected $application_domain = '';
+    /**
+     * The format byte the off-chain header states, and what the body is then checked against.
+     * Defaults to `MessageFormat_utf8`. Refused for `MessageType_raw` for the same reason a
+     * domain is: there is no header to put it in.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.MessageFormat message_format = 7;</code>
+     */
+    protected $message_format = 0;
+    protected $message_payload;
 
     /**
      * Constructor.
@@ -33,9 +63,33 @@ class MessageSigningInput extends \Google\Protobuf\Internal\Message
      *     Optional. Data for populating the Message object.
      *
      *     @type string $private_key
-     *           The secret private key used for signing (32 bytes).
+     *           The secret private key used for signing (32 bytes). Required to sign; required for a
+     *           pre-image only when `public_key` is not given.
+     *     @type string $public_key
+     *           The public key of the signer (32 bytes), for asking `TWMessageSignerPreImageHashes` for
+     *           the bytes to sign without holding the secret — the external-signing flow, where the key
+     *           lives in a hardware wallet. `MessageType_offchain_v0` states the signer inside the signed
+     *           bytes, so its pre-image cannot be built without one of the two keys; `MessageType_raw`
+     *           needs neither. Ignored when signing, which takes the signer from `private_key`.
+     *     @type int $message_type
+     *           How the signed bytes are produced. Defaults to `MessageType_raw`, which is what this coin
+     *           did before the other types existed.
+     *     @type string $application_domain
+     *           The 32-byte application domain of the off-chain message header: the caller's own domain
+     *           separator, which is what stops a signature over its messages from verifying against
+     *           another application's. Required for `MessageType_offchain_v0`, and refused for
+     *           `MessageType_raw`, which signs the body bare and has no header to state one in.
+     *     @type int $message_format
+     *           The format byte the off-chain header states, and what the body is then checked against.
+     *           Defaults to `MessageFormat_utf8`. Refused for `MessageType_raw` for the same reason a
+     *           domain is: there is no header to put it in.
      *     @type string $message
      *           A UTF-8 regular message to sign.
+     *           Keep it a `string`. `MessageType_raw` signs the body as it stands, and its being
+     *           UTF-8 is what keeps those bytes from ever forming a Solana transaction message —
+     *           see the note on the raw arm in `message_signer.rs` before making it `bytes`.
+     *     @type \TW\Solana\Proto\StructuredMessage $structured_message
+     *           Labeled lines that this library renders into the message body.
      * }
      */
     public function __construct($data = NULL) {
@@ -44,7 +98,8 @@ class MessageSigningInput extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * The secret private key used for signing (32 bytes).
+     * The secret private key used for signing (32 bytes). Required to sign; required for a
+     * pre-image only when `public_key` is not given.
      *
      * Generated from protobuf field <code>bytes private_key = 1;</code>
      * @return string
@@ -55,7 +110,8 @@ class MessageSigningInput extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * The secret private key used for signing (32 bytes).
+     * The secret private key used for signing (32 bytes). Required to sign; required for a
+     * pre-image only when `public_key` is not given.
      *
      * Generated from protobuf field <code>bytes private_key = 1;</code>
      * @param string $var
@@ -70,18 +126,153 @@ class MessageSigningInput extends \Google\Protobuf\Internal\Message
     }
 
     /**
+     * The public key of the signer (32 bytes), for asking `TWMessageSignerPreImageHashes` for
+     * the bytes to sign without holding the secret — the external-signing flow, where the key
+     * lives in a hardware wallet. `MessageType_offchain_v0` states the signer inside the signed
+     * bytes, so its pre-image cannot be built without one of the two keys; `MessageType_raw`
+     * needs neither. Ignored when signing, which takes the signer from `private_key`.
+     *
+     * Generated from protobuf field <code>bytes public_key = 6;</code>
+     * @return string
+     */
+    public function getPublicKey()
+    {
+        return $this->public_key;
+    }
+
+    /**
+     * The public key of the signer (32 bytes), for asking `TWMessageSignerPreImageHashes` for
+     * the bytes to sign without holding the secret — the external-signing flow, where the key
+     * lives in a hardware wallet. `MessageType_offchain_v0` states the signer inside the signed
+     * bytes, so its pre-image cannot be built without one of the two keys; `MessageType_raw`
+     * needs neither. Ignored when signing, which takes the signer from `private_key`.
+     *
+     * Generated from protobuf field <code>bytes public_key = 6;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setPublicKey($var)
+    {
+        GPBUtil::checkString($var, False);
+        $this->public_key = $var;
+
+        return $this;
+    }
+
+    /**
+     * How the signed bytes are produced. Defaults to `MessageType_raw`, which is what this coin
+     * did before the other types existed.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.MessageType message_type = 3;</code>
+     * @return int
+     */
+    public function getMessageType()
+    {
+        return $this->message_type;
+    }
+
+    /**
+     * How the signed bytes are produced. Defaults to `MessageType_raw`, which is what this coin
+     * did before the other types existed.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.MessageType message_type = 3;</code>
+     * @param int $var
+     * @return $this
+     */
+    public function setMessageType($var)
+    {
+        GPBUtil::checkEnum($var, \TW\Solana\Proto\MessageType::class);
+        $this->message_type = $var;
+
+        return $this;
+    }
+
+    /**
+     * The 32-byte application domain of the off-chain message header: the caller's own domain
+     * separator, which is what stops a signature over its messages from verifying against
+     * another application's. Required for `MessageType_offchain_v0`, and refused for
+     * `MessageType_raw`, which signs the body bare and has no header to state one in.
+     *
+     * Generated from protobuf field <code>bytes application_domain = 4;</code>
+     * @return string
+     */
+    public function getApplicationDomain()
+    {
+        return $this->application_domain;
+    }
+
+    /**
+     * The 32-byte application domain of the off-chain message header: the caller's own domain
+     * separator, which is what stops a signature over its messages from verifying against
+     * another application's. Required for `MessageType_offchain_v0`, and refused for
+     * `MessageType_raw`, which signs the body bare and has no header to state one in.
+     *
+     * Generated from protobuf field <code>bytes application_domain = 4;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setApplicationDomain($var)
+    {
+        GPBUtil::checkString($var, False);
+        $this->application_domain = $var;
+
+        return $this;
+    }
+
+    /**
+     * The format byte the off-chain header states, and what the body is then checked against.
+     * Defaults to `MessageFormat_utf8`. Refused for `MessageType_raw` for the same reason a
+     * domain is: there is no header to put it in.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.MessageFormat message_format = 7;</code>
+     * @return int
+     */
+    public function getMessageFormat()
+    {
+        return $this->message_format;
+    }
+
+    /**
+     * The format byte the off-chain header states, and what the body is then checked against.
+     * Defaults to `MessageFormat_utf8`. Refused for `MessageType_raw` for the same reason a
+     * domain is: there is no header to put it in.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.MessageFormat message_format = 7;</code>
+     * @param int $var
+     * @return $this
+     */
+    public function setMessageFormat($var)
+    {
+        GPBUtil::checkEnum($var, \TW\Solana\Proto\MessageFormat::class);
+        $this->message_format = $var;
+
+        return $this;
+    }
+
+    /**
      * A UTF-8 regular message to sign.
+     * Keep it a `string`. `MessageType_raw` signs the body as it stands, and its being
+     * UTF-8 is what keeps those bytes from ever forming a Solana transaction message —
+     * see the note on the raw arm in `message_signer.rs` before making it `bytes`.
      *
      * Generated from protobuf field <code>string message = 2;</code>
      * @return string
      */
     public function getMessage()
     {
-        return $this->message;
+        return $this->readOneof(2);
+    }
+
+    public function hasMessage()
+    {
+        return $this->hasOneof(2);
     }
 
     /**
      * A UTF-8 regular message to sign.
+     * Keep it a `string`. `MessageType_raw` signs the body as it stands, and its being
+     * UTF-8 is what keeps those bytes from ever forming a Solana transaction message —
+     * see the note on the raw arm in `message_signer.rs` before making it `bytes`.
      *
      * Generated from protobuf field <code>string message = 2;</code>
      * @param string $var
@@ -90,9 +281,48 @@ class MessageSigningInput extends \Google\Protobuf\Internal\Message
     public function setMessage($var)
     {
         GPBUtil::checkString($var, True);
-        $this->message = $var;
+        $this->writeOneof(2, $var);
 
         return $this;
+    }
+
+    /**
+     * Labeled lines that this library renders into the message body.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.StructuredMessage structured_message = 5;</code>
+     * @return \TW\Solana\Proto\StructuredMessage|null
+     */
+    public function getStructuredMessage()
+    {
+        return $this->readOneof(5);
+    }
+
+    public function hasStructuredMessage()
+    {
+        return $this->hasOneof(5);
+    }
+
+    /**
+     * Labeled lines that this library renders into the message body.
+     *
+     * Generated from protobuf field <code>.TW.Solana.Proto.StructuredMessage structured_message = 5;</code>
+     * @param \TW\Solana\Proto\StructuredMessage $var
+     * @return $this
+     */
+    public function setStructuredMessage($var)
+    {
+        GPBUtil::checkMessage($var, \TW\Solana\Proto\StructuredMessage::class);
+        $this->writeOneof(5, $var);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessagePayload()
+    {
+        return $this->whichOneof("message_payload");
     }
 
 }

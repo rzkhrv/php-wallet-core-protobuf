@@ -42,6 +42,28 @@ class Pay extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.TW.Sui.Proto.ObjectRef gas = 4;</code>
      */
     protected $gas = null;
+    /**
+     * SIP-58: type of the coin that is withdrawn from the sender's address balance, like
+     * `0x2::sui::SUI` or `0xdba3...::usdc::USDC`. Required when `address_balance_amount` is set and
+     * rejected otherwise. The `input_coins` must be coins of this type.
+     *
+     * Generated from protobuf field <code>string coin_type = 5;</code>
+     */
+    protected $coin_type = '';
+    /**
+     * SIP-58: amount of `coin_type` withdrawn from the sender's address balance, an additional
+     * source of funds next to `input_coins`. 0 means none.
+     * - With `input_coins`, it is merged into the first coin and the change stays in that coin.
+     * - Without `input_coins` it must equal the sum of `amounts` exactly: every recipient is paid
+     *   with a coin redeemed for exactly its amount.
+     *   Each such coin is one balance-withdraw reservation, and the network allows at most 10 per
+     *   transaction (plus one for gas paid from the address balance): more recipients are rejected by
+     *   the node, not by wallet-core (the limit is the node's to change).
+     * Gas is separate: a gas coin, or the SUI address balance when `SigningInput.valid_during` is set.
+     *
+     * Generated from protobuf field <code>uint64 address_balance_amount = 6;</code>
+     */
+    protected $address_balance_amount = 0;
 
     /**
      * Constructor.
@@ -57,6 +79,20 @@ class Pay extends \Google\Protobuf\Internal\Message
      *           The amounts to be transferred to recipients, following the same order.
      *     @type \TW\Sui\Proto\ObjectRef $gas
      *           Gas object to be used in this transaction.
+     *     @type string $coin_type
+     *           SIP-58: type of the coin that is withdrawn from the sender's address balance, like
+     *           `0x2::sui::SUI` or `0xdba3...::usdc::USDC`. Required when `address_balance_amount` is set and
+     *           rejected otherwise. The `input_coins` must be coins of this type.
+     *     @type int|string $address_balance_amount
+     *           SIP-58: amount of `coin_type` withdrawn from the sender's address balance, an additional
+     *           source of funds next to `input_coins`. 0 means none.
+     *           - With `input_coins`, it is merged into the first coin and the change stays in that coin.
+     *           - Without `input_coins` it must equal the sum of `amounts` exactly: every recipient is paid
+     *             with a coin redeemed for exactly its amount.
+     *             Each such coin is one balance-withdraw reservation, and the network allows at most 10 per
+     *             transaction (plus one for gas paid from the address balance): more recipients are rejected by
+     *             the node, not by wallet-core (the limit is the node's to change).
+     *           Gas is separate: a gas coin, or the SUI address balance when `SigningInput.valid_during` is set.
      * }
      */
     public function __construct($data = NULL) {
@@ -174,6 +210,78 @@ class Pay extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkMessage($var, \TW\Sui\Proto\ObjectRef::class);
         $this->gas = $var;
+
+        return $this;
+    }
+
+    /**
+     * SIP-58: type of the coin that is withdrawn from the sender's address balance, like
+     * `0x2::sui::SUI` or `0xdba3...::usdc::USDC`. Required when `address_balance_amount` is set and
+     * rejected otherwise. The `input_coins` must be coins of this type.
+     *
+     * Generated from protobuf field <code>string coin_type = 5;</code>
+     * @return string
+     */
+    public function getCoinType()
+    {
+        return $this->coin_type;
+    }
+
+    /**
+     * SIP-58: type of the coin that is withdrawn from the sender's address balance, like
+     * `0x2::sui::SUI` or `0xdba3...::usdc::USDC`. Required when `address_balance_amount` is set and
+     * rejected otherwise. The `input_coins` must be coins of this type.
+     *
+     * Generated from protobuf field <code>string coin_type = 5;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setCoinType($var)
+    {
+        GPBUtil::checkString($var, True);
+        $this->coin_type = $var;
+
+        return $this;
+    }
+
+    /**
+     * SIP-58: amount of `coin_type` withdrawn from the sender's address balance, an additional
+     * source of funds next to `input_coins`. 0 means none.
+     * - With `input_coins`, it is merged into the first coin and the change stays in that coin.
+     * - Without `input_coins` it must equal the sum of `amounts` exactly: every recipient is paid
+     *   with a coin redeemed for exactly its amount.
+     *   Each such coin is one balance-withdraw reservation, and the network allows at most 10 per
+     *   transaction (plus one for gas paid from the address balance): more recipients are rejected by
+     *   the node, not by wallet-core (the limit is the node's to change).
+     * Gas is separate: a gas coin, or the SUI address balance when `SigningInput.valid_during` is set.
+     *
+     * Generated from protobuf field <code>uint64 address_balance_amount = 6;</code>
+     * @return int|string
+     */
+    public function getAddressBalanceAmount()
+    {
+        return $this->address_balance_amount;
+    }
+
+    /**
+     * SIP-58: amount of `coin_type` withdrawn from the sender's address balance, an additional
+     * source of funds next to `input_coins`. 0 means none.
+     * - With `input_coins`, it is merged into the first coin and the change stays in that coin.
+     * - Without `input_coins` it must equal the sum of `amounts` exactly: every recipient is paid
+     *   with a coin redeemed for exactly its amount.
+     *   Each such coin is one balance-withdraw reservation, and the network allows at most 10 per
+     *   transaction (plus one for gas paid from the address balance): more recipients are rejected by
+     *   the node, not by wallet-core (the limit is the node's to change).
+     * Gas is separate: a gas coin, or the SUI address balance when `SigningInput.valid_during` is set.
+     *
+     * Generated from protobuf field <code>uint64 address_balance_amount = 6;</code>
+     * @param int|string $var
+     * @return $this
+     */
+    public function setAddressBalanceAmount($var)
+    {
+        GPBUtil::checkUint64($var);
+        $this->address_balance_amount = $var;
 
         return $this;
     }

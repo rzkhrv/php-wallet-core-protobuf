@@ -22,7 +22,7 @@ class TokenTransferToFeePayer extends \Google\Protobuf\Internal\Message
      */
     protected $fee_token_mint_address = '';
     /**
-     * Token account address of the fee recipient. 
+     * Token account address of the fee recipient.
      * Note that it could be different from the token account of the feepayer.
      *
      * Generated from protobuf field <code>string fee_recipient_token_address = 2;</code>
@@ -62,7 +62,7 @@ class TokenTransferToFeePayer extends \Google\Protobuf\Internal\Message
      *     @type string $fee_token_mint_address
      *           Mint address of the fee token
      *     @type string $fee_recipient_token_address
-     *           Token account address of the fee recipient. 
+     *           Token account address of the fee recipient.
      *           Note that it could be different from the token account of the feepayer.
      *     @type int|string $fee_amount
      *           Fee amount
@@ -106,7 +106,7 @@ class TokenTransferToFeePayer extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Token account address of the fee recipient. 
+     * Token account address of the fee recipient.
      * Note that it could be different from the token account of the feepayer.
      *
      * Generated from protobuf field <code>string fee_recipient_token_address = 2;</code>
@@ -118,7 +118,7 @@ class TokenTransferToFeePayer extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Token account address of the fee recipient. 
+     * Token account address of the fee recipient.
      * Note that it could be different from the token account of the feepayer.
      *
      * Generated from protobuf field <code>string fee_recipient_token_address = 2;</code>

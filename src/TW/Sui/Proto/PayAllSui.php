@@ -19,6 +19,8 @@ class PayAllSui extends \Google\Protobuf\Internal\Message
 {
     /**
      * The Sui coins to be used in this transaction, including the coin for gas payment.
+     * When `SigningInput.valid_during` is set, gas is paid from the address balance and no coin is
+     * reserved for it.
      *
      * Generated from protobuf field <code>repeated .TW.Sui.Proto.ObjectRef input_coins = 1;</code>
      */
@@ -29,6 +31,14 @@ class PayAllSui extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string recipient = 2;</code>
      */
     protected $recipient = '';
+    /**
+     * SIP-58: amount (MIST) withdrawn from the sender's SUI address balance and sent as well.
+     * 0 means none. It cannot mean "everything": a withdrawal reserves an explicit amount, so the
+     * caller passes the address balance minus `gas_budget` (when `SigningInput.valid_during` is set).
+     *
+     * Generated from protobuf field <code>uint64 address_balance_amount = 3;</code>
+     */
+    protected $address_balance_amount = 0;
 
     /**
      * Constructor.
@@ -38,8 +48,14 @@ class PayAllSui extends \Google\Protobuf\Internal\Message
      *
      *     @type array<\TW\Sui\Proto\ObjectRef>|\Google\Protobuf\Internal\RepeatedField $input_coins
      *           The Sui coins to be used in this transaction, including the coin for gas payment.
+     *           When `SigningInput.valid_during` is set, gas is paid from the address balance and no coin is
+     *           reserved for it.
      *     @type string $recipient
      *           The recipient address.
+     *     @type int|string $address_balance_amount
+     *           SIP-58: amount (MIST) withdrawn from the sender's SUI address balance and sent as well.
+     *           0 means none. It cannot mean "everything": a withdrawal reserves an explicit amount, so the
+     *           caller passes the address balance minus `gas_budget` (when `SigningInput.valid_during` is set).
      * }
      */
     public function __construct($data = NULL) {
@@ -49,6 +65,8 @@ class PayAllSui extends \Google\Protobuf\Internal\Message
 
     /**
      * The Sui coins to be used in this transaction, including the coin for gas payment.
+     * When `SigningInput.valid_during` is set, gas is paid from the address balance and no coin is
+     * reserved for it.
      *
      * Generated from protobuf field <code>repeated .TW.Sui.Proto.ObjectRef input_coins = 1;</code>
      * @return \Google\Protobuf\Internal\RepeatedField
@@ -60,6 +78,8 @@ class PayAllSui extends \Google\Protobuf\Internal\Message
 
     /**
      * The Sui coins to be used in this transaction, including the coin for gas payment.
+     * When `SigningInput.valid_during` is set, gas is paid from the address balance and no coin is
+     * reserved for it.
      *
      * Generated from protobuf field <code>repeated .TW.Sui.Proto.ObjectRef input_coins = 1;</code>
      * @param array<\TW\Sui\Proto\ObjectRef>|\Google\Protobuf\Internal\RepeatedField $var
@@ -95,6 +115,36 @@ class PayAllSui extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkString($var, True);
         $this->recipient = $var;
+
+        return $this;
+    }
+
+    /**
+     * SIP-58: amount (MIST) withdrawn from the sender's SUI address balance and sent as well.
+     * 0 means none. It cannot mean "everything": a withdrawal reserves an explicit amount, so the
+     * caller passes the address balance minus `gas_budget` (when `SigningInput.valid_during` is set).
+     *
+     * Generated from protobuf field <code>uint64 address_balance_amount = 3;</code>
+     * @return int|string
+     */
+    public function getAddressBalanceAmount()
+    {
+        return $this->address_balance_amount;
+    }
+
+    /**
+     * SIP-58: amount (MIST) withdrawn from the sender's SUI address balance and sent as well.
+     * 0 means none. It cannot mean "everything": a withdrawal reserves an explicit amount, so the
+     * caller passes the address balance minus `gas_budget` (when `SigningInput.valid_during` is set).
+     *
+     * Generated from protobuf field <code>uint64 address_balance_amount = 3;</code>
+     * @param int|string $var
+     * @return $this
+     */
+    public function setAddressBalanceAmount($var)
+    {
+        GPBUtil::checkUint64($var);
+        $this->address_balance_amount = $var;
 
         return $this;
     }

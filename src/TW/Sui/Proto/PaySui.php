@@ -19,6 +19,8 @@ class PaySui extends \Google\Protobuf\Internal\Message
 {
     /**
      * The Sui coins to be used in this transaction, including the coin for gas payment.
+     * When `SigningInput.valid_during` is set, gas is paid from the address balance, no coin is
+     * reserved for it, and this list may be empty if `address_balance_amount` covers the amounts.
      *
      * Generated from protobuf field <code>repeated .TW.Sui.Proto.ObjectRef input_coins = 1;</code>
      */
@@ -35,6 +37,21 @@ class PaySui extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>repeated uint64 amounts = 3;</code>
      */
     private $amounts;
+    /**
+     * SIP-58: amount (MIST) withdrawn from the sender's SUI address balance, an additional source
+     * of funds next to `input_coins`. 0 means none.
+     * - With `input_coins`, it is merged into the first coin and the change stays in that coin.
+     * - Without `input_coins` it must equal the sum of `amounts` exactly: every recipient is paid
+     *   with a coin redeemed for exactly its amount.
+     *   Each such coin is one balance-withdraw reservation, and the network allows at most 10 per
+     *   transaction (plus one for gas paid from the address balance): more recipients are rejected by
+     *   the node, not by wallet-core (the limit is the node's to change).
+     * The caller must make sure the address balance covers this amount plus `gas_budget` (when
+     * `SigningInput.valid_during` is set) because the node rejects the transaction otherwise.
+     *
+     * Generated from protobuf field <code>uint64 address_balance_amount = 4;</code>
+     */
+    protected $address_balance_amount = 0;
 
     /**
      * Constructor.
@@ -44,10 +61,23 @@ class PaySui extends \Google\Protobuf\Internal\Message
      *
      *     @type array<\TW\Sui\Proto\ObjectRef>|\Google\Protobuf\Internal\RepeatedField $input_coins
      *           The Sui coins to be used in this transaction, including the coin for gas payment.
+     *           When `SigningInput.valid_during` is set, gas is paid from the address balance, no coin is
+     *           reserved for it, and this list may be empty if `address_balance_amount` covers the amounts.
      *     @type array<string>|\Google\Protobuf\Internal\RepeatedField $recipients
      *           The recipients' addresses, the length of this vector must be the same as amounts.
      *     @type array<int>|array<string>|\Google\Protobuf\Internal\RepeatedField $amounts
      *           The amounts to be transferred to recipients, following the same order.
+     *     @type int|string $address_balance_amount
+     *           SIP-58: amount (MIST) withdrawn from the sender's SUI address balance, an additional source
+     *           of funds next to `input_coins`. 0 means none.
+     *           - With `input_coins`, it is merged into the first coin and the change stays in that coin.
+     *           - Without `input_coins` it must equal the sum of `amounts` exactly: every recipient is paid
+     *             with a coin redeemed for exactly its amount.
+     *             Each such coin is one balance-withdraw reservation, and the network allows at most 10 per
+     *             transaction (plus one for gas paid from the address balance): more recipients are rejected by
+     *             the node, not by wallet-core (the limit is the node's to change).
+     *           The caller must make sure the address balance covers this amount plus `gas_budget` (when
+     *           `SigningInput.valid_during` is set) because the node rejects the transaction otherwise.
      * }
      */
     public function __construct($data = NULL) {
@@ -57,6 +87,8 @@ class PaySui extends \Google\Protobuf\Internal\Message
 
     /**
      * The Sui coins to be used in this transaction, including the coin for gas payment.
+     * When `SigningInput.valid_during` is set, gas is paid from the address balance, no coin is
+     * reserved for it, and this list may be empty if `address_balance_amount` covers the amounts.
      *
      * Generated from protobuf field <code>repeated .TW.Sui.Proto.ObjectRef input_coins = 1;</code>
      * @return \Google\Protobuf\Internal\RepeatedField
@@ -68,6 +100,8 @@ class PaySui extends \Google\Protobuf\Internal\Message
 
     /**
      * The Sui coins to be used in this transaction, including the coin for gas payment.
+     * When `SigningInput.valid_during` is set, gas is paid from the address balance, no coin is
+     * reserved for it, and this list may be empty if `address_balance_amount` covers the amounts.
      *
      * Generated from protobuf field <code>repeated .TW.Sui.Proto.ObjectRef input_coins = 1;</code>
      * @param array<\TW\Sui\Proto\ObjectRef>|\Google\Protobuf\Internal\RepeatedField $var
@@ -129,6 +163,50 @@ class PaySui extends \Google\Protobuf\Internal\Message
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::UINT64);
         $this->amounts = $arr;
+
+        return $this;
+    }
+
+    /**
+     * SIP-58: amount (MIST) withdrawn from the sender's SUI address balance, an additional source
+     * of funds next to `input_coins`. 0 means none.
+     * - With `input_coins`, it is merged into the first coin and the change stays in that coin.
+     * - Without `input_coins` it must equal the sum of `amounts` exactly: every recipient is paid
+     *   with a coin redeemed for exactly its amount.
+     *   Each such coin is one balance-withdraw reservation, and the network allows at most 10 per
+     *   transaction (plus one for gas paid from the address balance): more recipients are rejected by
+     *   the node, not by wallet-core (the limit is the node's to change).
+     * The caller must make sure the address balance covers this amount plus `gas_budget` (when
+     * `SigningInput.valid_during` is set) because the node rejects the transaction otherwise.
+     *
+     * Generated from protobuf field <code>uint64 address_balance_amount = 4;</code>
+     * @return int|string
+     */
+    public function getAddressBalanceAmount()
+    {
+        return $this->address_balance_amount;
+    }
+
+    /**
+     * SIP-58: amount (MIST) withdrawn from the sender's SUI address balance, an additional source
+     * of funds next to `input_coins`. 0 means none.
+     * - With `input_coins`, it is merged into the first coin and the change stays in that coin.
+     * - Without `input_coins` it must equal the sum of `amounts` exactly: every recipient is paid
+     *   with a coin redeemed for exactly its amount.
+     *   Each such coin is one balance-withdraw reservation, and the network allows at most 10 per
+     *   transaction (plus one for gas paid from the address balance): more recipients are rejected by
+     *   the node, not by wallet-core (the limit is the node's to change).
+     * The caller must make sure the address balance covers this amount plus `gas_budget` (when
+     * `SigningInput.valid_during` is set) because the node rejects the transaction otherwise.
+     *
+     * Generated from protobuf field <code>uint64 address_balance_amount = 4;</code>
+     * @param int|string $var
+     * @return $this
+     */
+    public function setAddressBalanceAmount($var)
+    {
+        GPBUtil::checkUint64($var);
+        $this->address_balance_amount = $var;
 
         return $this;
     }
