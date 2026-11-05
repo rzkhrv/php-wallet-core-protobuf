@@ -1,0 +1,15 @@
+{
+    "name": "rzkhrv/php-wallet-core-protobuf",
+    "description": "PHP Protobuf classes generated from Trust Wallet Core schemas",
+    "type": "library",
+    "license": "Apache-2.0",
+    "require": {
+        "google/protobuf": "^3.25 || ^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "TW\\": "src/TW/",
+            "GPBMetadata\\": "src/GPBMetadata/"
+        }
+    }
+}
