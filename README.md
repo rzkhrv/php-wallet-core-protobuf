@@ -5,7 +5,7 @@ PHP Protobuf classes generated from [Trust Wallet Core](https://github.com/trust
 ## Install
 
 ```sh
-composer require rzkhrv/php-wallet-core-protobuf:4.7.0
+composer require rzkhrv/php-wallet-core-protobuf
 ```
 
 ## Generate
